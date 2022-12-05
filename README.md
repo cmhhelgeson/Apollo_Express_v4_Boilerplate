@@ -156,6 +156,8 @@ Now that our typeDefs and resolvers are created, we can pass them into the execu
 
 ```ts
 /* src/index.ts */
+import { makeExecutableSchema } from '@graphql-tools/schema';
+...
 //Create schema and mocked schema
 const schema = makeExecutableSchema({
   typeDefs: [
@@ -167,9 +169,21 @@ const schema = makeExecutableSchema({
 })
 ```
 
+Creating a version of the schema that mocks values is as simple as passing the executable schema to addMocksToSchema().
+
+```ts
+/* src/index.ts */
+import { addMocksToSchema } from '@graphql-tools/mock';
+...
+//Create mocked schema
+const mockedSchema = addMocksToSchema({
+  schema
+})
+```
+
 <h3>Applying GraphQL-Scalars to Apollo Server Schema</h3>
 
-The custom scalars in GraphQL-Scalars can either be applied to our schema individually or collectively.
+The custom scalars in GraphQL-Scalars can either be applied to our schema individually or collectively. GraphQL-Scalars exposes a type definition, resolver, and mock function for each custom scalar type it defines.
 
 <h5>Import Custom Scalars Individually</h5>
 
@@ -178,6 +192,7 @@ The custom scalars in GraphQL-Scalars can either be applied to our schema indivi
 import {
   PositiveFloatTypeDefinition, 
   PositiveFloatResolver,
+  PositiveFloatMock
 } from "graphql-scalars"
 
 const schema = makeExecutableSchema({
@@ -190,6 +205,14 @@ const schema = makeExecutableSchema({
     ...resolvers,
   }
 })
+
+const mockedSchema = addMocksToSchema({
+  schema,
+  mocks: {
+    PositiveFloat: PositiveFloatMock,
+    //EmailAddress: EmailAddressMock
+  }
+})
 ```
 
 <h5>Import All GraphQL Scalars Collectively</h5>
@@ -198,6 +221,7 @@ const schema = makeExecutableSchema({
 /* src/index.ts */
 import {typeDefs as gqlScalarTypeDefs} from "graphql-scalars"
 import {resolvers as gqlScalarResolvers} from "graphql-scalars"
+import {mocks as gqlScalarMocks} from "graphql-scalars"
 
 const schema = makeExecutableSchema({
   typeDefs: [
@@ -209,10 +233,14 @@ const schema = makeExecutableSchema({
     ...resolvers,
   }
 })
-```
 
-<h3>Mocks</h3>
-Coming soon...
+const mockedSchema = addMocksToSchema({
+  schema,
+  mocks: {
+    ...gqlScalarMocks
+  }
+})
+```
 
 <h3>Creating and starting Apollo Express Server</h3>
 
