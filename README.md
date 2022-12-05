@@ -1,10 +1,11 @@
 <h1>Disclaimer</h1>
 
 >NOTE: This boilerplate combines the official documented boilerplate of many of the utilized packages. If you have any issues, consult the boilerplate listed on these websites: 
-[Apollo Server v4: Express Middleware API],
-[Apollo Server v4: Type Generation],
-[GraphQL-Scalars Quickstart], 
-[GraphQL-Scalars With Apollo Server]
+
+>[Apollo Server v4: Express Middleware API],
+>[Apollo Server v4: Type Generation],
+>[GraphQL-Scalars Quickstart], 
+>[GraphQL-Scalars With Apollo Server]
 
 <h1>Boilerplate Tutorial</h1>
 Copy or clone the package.json and tsconfig.json files, and create the codgen.yml file.
