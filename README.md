@@ -9,6 +9,8 @@
 <h1>Boilerplate Tutorial</h1>
 Copy or clone the package.json and tsconfig.json files, and create the codgen.yml file.
 
+<h3>Test</h3>
+
 ```yml
 # This configuration file tells GraphQL Code Generator how to generate types based on our schema.
 
