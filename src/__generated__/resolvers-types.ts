@@ -11,6 +11,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  EmailAddress: string;
   PositiveFloat: number;
 };
 
@@ -22,7 +23,7 @@ export type Query = {
 export type User = {
   __typename?: 'User';
   age?: Maybe<Scalars['PositiveFloat']>;
-  email?: Maybe<Scalars['String']>;
+  email?: Maybe<Scalars['EmailAddress']>;
   firstName: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
@@ -98,6 +99,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
+  EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
   PositiveFloat: ResolverTypeWrapper<Scalars['PositiveFloat']>;
   Query: ResolverTypeWrapper<{}>;
@@ -108,12 +110,17 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
+  EmailAddress: Scalars['EmailAddress'];
   ID: Scalars['ID'];
   PositiveFloat: Scalars['PositiveFloat'];
   Query: {};
   String: Scalars['String'];
   User: User;
 };
+
+export interface EmailAddressScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['EmailAddress'], any> {
+  name: 'EmailAddress';
+}
 
 export interface PositiveFloatScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PositiveFloat'], any> {
   name: 'PositiveFloat';
@@ -125,7 +132,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   age?: Resolver<Maybe<ResolversTypes['PositiveFloat']>, ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  email?: Resolver<Maybe<ResolversTypes['EmailAddress']>, ParentType, ContextType>;
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -133,6 +140,7 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type Resolvers<ContextType = any> = {
+  EmailAddress?: GraphQLScalarType;
   PositiveFloat?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
