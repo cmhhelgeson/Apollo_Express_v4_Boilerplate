@@ -1,0 +1,15 @@
+scalar PositiveFloat
+
+scalar EmailAddress
+
+type User {
+  id: ID!
+  firstName: String!
+  lastName: String!
+  age: PositiveFloat
+  email: EmailAddress
+}
+
+type Query {
+  users: [User]
+}

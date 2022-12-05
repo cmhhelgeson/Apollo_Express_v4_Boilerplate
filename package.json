@@ -1,0 +1,38 @@
+{
+  "name": "as4-generating-types-example",
+  "version": "1.0.0",
+  "description": "An example of generating types from a schema to use in your resolvers.",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "generate": "graphql-codegen --config codegen.yml",
+    "compile": "npm run generate && tsc",
+    "postinstall": "npm run compile",
+    "start": "npm run compile && node ./dist/index.js",
+    "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon ./dist/index.js \""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.0.0",
+    "@graphql-tools/mock": "^8.7.12",
+    "@graphql-tools/schema": "^9.0.10",
+    "body-parser": "^1.20.1",
+    "cors": "^2.8.5",
+    "express": "^4.18.2",
+    "graphql": "^16.6.0",
+    "graphql-scalars": "^1.20.1",
+    "graphql-tag": "^2.12.6",
+    "typescript": "^4.8.3"
+  },
+  "devDependencies": {
+    "@graphql-codegen/cli": "2.12.0",
+    "@graphql-codegen/typescript": "2.7.3",
+    "@graphql-codegen/typescript-resolvers": "2.7.3",
+    "@types/cors": "^2.8.13",
+    "@types/node": "^18.7.18",
+    "concurrently": "7.4.0",
+    "nodemon": "2.0.19"
+  }
+}
