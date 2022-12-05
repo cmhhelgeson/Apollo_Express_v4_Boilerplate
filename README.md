@@ -27,11 +27,11 @@ generates:
 ```
 
 <h3>Setting up GraphQL-Scalars</h3>
-Now that we have set-up our environment, we can begin to define our top-level schema. 
+Now that we've setup our environment, we can begin to define our top-level schema. 
 
 In order to use the custom scalars defined within the graphql-scalars library, we'll need to make adjustments to two of our files. 
 
-First, in codegen.yml, we'll need to add a config field that resolves custom types from graphql-scalars into types that CodeGen natively understands.
+First, in codegen.yml, we'll need to add a config field that resolves custom types from graphql-scalars into Basic Typescript Types.
 
 ```yml
 # The location of our top-level schema
@@ -49,15 +49,16 @@ generates:
         UUID: string
 ```
 
-We'll also need to define these scalars on the first lines of our schema.graphql file.
+We'll also need to define these scalars at the top of our schema file.
 
 ```graphql
+"""schema.graphql"""
 scalar PositiveFloat
-
 scalar EmailAddress
+scalar UUID
 
 type User {
-  id: ID!
+  id: UUID!
   firstName: String!
   lastName: String!
   age: PositiveFloat
@@ -70,8 +71,182 @@ type Query {
 ```
 
 <h3>Running CodeGen</h3>
+
 Once our custom scalars are properly set up, you can generate your types by running `npm run generate` or `yarn run generate`.
 
+Looking at our generated types file, we can see how CodeGen generates types for our queries and evaluates our custom scalars as native Typescript types.
+
+```ts
+/* src/resolvers-types.ts */
+export type Scalars = {
+  //ID, EmailAddress, and PositiveFloat have adopted the types
+  //defined in our codegen.yml file!
+  ID: string;
+  EmailAddress: string;
+  PositiveFloat: number;
+  String: string;
+  Boolean: boolean;
+  Int: number;
+  Float: number;
+};
+
+//Codegen automatically provides us with __typename, and types
+//based on our schema and scalars.
+export type User = {
+  __typename?: 'User';
+  age?: Maybe<Scalars['PositiveFloat']>;
+  email?: Maybe<Scalars['EmailAddress']>;
+  firstName: Scalars['String'];
+  id: Scalars['ID'];
+  lastName: Scalars['String'];
+};
+```
+
+<h3>Creating HTTP Server</h3>
+
+Start by creating an express application and a httpServer that listens to it
+
+```ts
+/* src/index.ts */
+import express from "express"
+import http from "http"
+
+...
+
+const app = express()
+const httpServer = http.createServer(app)
+
+```
+
+<h3>Creating Apollo Server Schema</h3>
+
+Next, we need to extract typeDefinitions from our GraphQL schema and define a default resolver for our queries. We can ensure that our resolver code conforms to the shape of our schema by importing the Resolvers type defined in our generated types file. 
+
+```ts
+/* src/index.ts */
+//Import file reading
+import { readFileSync } from 'fs';
+//Import Resolvers type from generated types file
+import { Resolvers } from '__generated__/resolvers-types';
+
+...
+
+//Read typeDefs from our schema.graphl file
+const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
+
+//Create resolvers object that conforms to Resolvers type
+const resolvers: Resolvers = {
+  Query: {
+    users: () => {
+      return [
+        {
+          id: "1", 
+          firstName: "Christian", 
+          lastName: "Helgeson", 
+          email: "email@gmail.com"
+        }
+      ]
+    }
+  }
+}
+
+```
+
+Now that our typeDefs and resolvers are created, we can pass them into the executable schema that will be passed to Apollo Server.
+
+```ts
+/* src/index.ts */
+//Create schema and mocked schema
+const schema = makeExecutableSchema({
+  typeDefs: [
+    typeDefs
+  ], 
+  resolvers: {
+    ...resolvers
+  }
+})
+```
+
+<h3>Applying GraphQL-Scalars to Apollo Server Schema</h3>
+
+The custom scalars in GraphQL-Scalars can either be applied to our schema individually or collectively.
+
+<h5>Import Custom Scalars Individually</h5>
+
+```ts
+/* src/index.ts */
+import {
+  PositiveFloatTypeDefinition, 
+  PositiveFloatResolver,
+} from "graphql-scalars"
+
+const schema = makeExecutableSchema({
+  typeDefs: [
+    PositiveFloatTypeDefinition,
+    typeDefs
+  ], 
+  resolvers: {
+    PositiveFloat: PositiveFloatResolver,
+    ...resolvers,
+  }
+})
+```
+
+<h5>Import All GraphQL Scalars Collectively</h5>
+
+```ts
+/* src/index.ts */
+import {typeDefs as gqlScalarTypeDefs} from "graphql-scalars"
+import {resolvers as gqlScalarResolvers} from "graphql-scalars"
+
+const schema = makeExecutableSchema({
+  typeDefs: [
+    ...gqlScalarTypeDefs,
+    typeDefs
+  ], 
+  resolvers: {
+    ...gqlScalarResolvers,
+    ...resolvers,
+  }
+})
+```
+
+<h3>Mocks</h3>
+Coming soon...
+
+<h3>Creating and starting Apollo Express Server</h3>
+
+```ts
+/* src/index.ts */
+import { ApolloServer } from '@apollo/server';
+import {expressMiddleware} from "@apollo/server/express4"
+import { ApolloServerPluginDrainHttpServer } from '@apollo/server/plugin/drainHttpServer';
+import cors from "cors"
+import pkg from "body-parser"
+const {json} = pkg;
+
+...
+
+//Apply schema and plugins to server
+const server = new ApolloServer({
+  schema: schema,
+  plugins: [ApolloServerPluginDrainHttpServer({httpServer})]
+});
+
+//Start server
+await server.start();
+
+//Apply express middleware
+app.use(
+  '/graphql',
+  cors<cors.CorsRequest>(),
+  json(),
+  expressMiddleware(server)
+)
+
+await new Promise<void>((resolve) => httpServer.listen({port: 8000}, resolve));
+console.log(`🚀 Server listening at: 8000`);
+```
 
 
 [apollo server v4: express middleware api]: <https://www.apollographql.com/docs/apollo-server/api/express-middleware/>

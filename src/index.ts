@@ -25,7 +25,7 @@ all graphql-scalars custom scalars */
 //import {resolvers as scalarResolvers} from "graphql-scalars"
 //import {mocks as scalarMocks} from "graphql-scalars"
 
-//Initialize Express Server
+//Create Express app/server
 const app = express();
 const httpServer = http.createServer(app);
 
