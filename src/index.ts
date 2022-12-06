@@ -54,6 +54,9 @@ const getPostsByUser = ({id}: User): Array<Post> => {
   return filteredPosts;
 }
 
+const getAuthorOfPost = ({authorID}: Post): User | undefined => {
+  return database.users.get(parseInt(authorID));
+}
 
 
 const resolvers: Resolvers = {
@@ -64,6 +67,9 @@ const resolvers: Resolvers = {
   User: {
     name: computeName,
     posts: getPostsByUser
+  },
+  Post: {
+    author: getAuthorOfPost
   }
 }
 

@@ -23,6 +23,7 @@ type Post {
   authorID: ID!
   published: Boolean!
   views: NonNegativeInt
+  author: User
 }
 
 type Query {

@@ -19,6 +19,7 @@ export type Scalars = {
 
 export type Post = {
   __typename?: 'Post';
+  author?: Maybe<User>;
   authorID: Scalars['ID'];
   body: Scalars['String'];
   id: Scalars['ID'];
@@ -156,6 +157,7 @@ export interface PositiveIntScalarConfig extends GraphQLScalarTypeConfig<Resolve
 }
 
 export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
+  author?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   authorID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
