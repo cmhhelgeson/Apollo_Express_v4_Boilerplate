@@ -12,11 +12,24 @@ export type Scalars = {
   Int: number;
   Float: number;
   EmailAddress: string;
+  NonNegativeInt: number;
   PositiveFloat: number;
+  PositiveInt: number;
+};
+
+export type Post = {
+  __typename?: 'Post';
+  authorID: Scalars['ID'];
+  body: Scalars['String'];
+  id: Scalars['ID'];
+  published: Scalars['Boolean'];
+  title: Scalars['String'];
+  views?: Maybe<Scalars['NonNegativeInt']>;
 };
 
 export type Query = {
   __typename?: 'Query';
+  posts?: Maybe<Array<Maybe<Post>>>;
   users?: Maybe<Array<Maybe<User>>>;
 };
 
@@ -27,6 +40,8 @@ export type User = {
   firstName: Scalars['String'];
   id: Scalars['ID'];
   lastName: Scalars['String'];
+  name: Scalars['String'];
+  posts?: Maybe<Array<Maybe<Post>>>;
 };
 
 
@@ -101,7 +116,10 @@ export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  NonNegativeInt: ResolverTypeWrapper<Scalars['NonNegativeInt']>;
   PositiveFloat: ResolverTypeWrapper<Scalars['PositiveFloat']>;
+  PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>;
+  Post: ResolverTypeWrapper<Post>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
   User: ResolverTypeWrapper<User>;
@@ -112,7 +130,10 @@ export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   EmailAddress: Scalars['EmailAddress'];
   ID: Scalars['ID'];
+  NonNegativeInt: Scalars['NonNegativeInt'];
   PositiveFloat: Scalars['PositiveFloat'];
+  PositiveInt: Scalars['PositiveInt'];
+  Post: Post;
   Query: {};
   String: Scalars['String'];
   User: User;
@@ -122,11 +143,30 @@ export interface EmailAddressScalarConfig extends GraphQLScalarTypeConfig<Resolv
   name: 'EmailAddress';
 }
 
+export interface NonNegativeIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['NonNegativeInt'], any> {
+  name: 'NonNegativeInt';
+}
+
 export interface PositiveFloatScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PositiveFloat'], any> {
   name: 'PositiveFloat';
 }
 
+export interface PositiveIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PositiveInt'], any> {
+  name: 'PositiveInt';
+}
+
+export type PostResolvers<ContextType = any, ParentType extends ResolversParentTypes['Post'] = ResolversParentTypes['Post']> = {
+  authorID?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  body?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  published?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  views?: Resolver<Maybe<ResolversTypes['NonNegativeInt']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  posts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
 };
 
@@ -136,12 +176,17 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  posts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type Resolvers<ContextType = any> = {
   EmailAddress?: GraphQLScalarType;
+  NonNegativeInt?: GraphQLScalarType;
   PositiveFloat?: GraphQLScalarType;
+  PositiveInt?: GraphQLScalarType;
+  Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
 };
