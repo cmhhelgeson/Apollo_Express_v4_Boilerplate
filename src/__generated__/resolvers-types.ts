@@ -15,6 +15,18 @@ export type Scalars = {
   NonNegativeInt: number;
   PositiveFloat: number;
   PositiveInt: number;
+  UUID: string;
+};
+
+export type Grid = {
+  __typename?: 'Grid';
+  data?: Maybe<Array<Maybe<Array<Maybe<Scalars['Int']>>>>>;
+  gridId: Scalars['ID'];
+  height: Scalars['PositiveInt'];
+  interpretAs: Scalars['String'];
+  label?: Maybe<Scalars['String']>;
+  problemNumber: Scalars['PositiveInt'];
+  width: Scalars['PositiveInt'];
 };
 
 export type Post = {
@@ -30,6 +42,7 @@ export type Post = {
 
 export type Query = {
   __typename?: 'Query';
+  grids?: Maybe<Array<Maybe<Grid>>>;
   posts?: Maybe<Array<Maybe<Post>>>;
   users?: Maybe<Array<Maybe<User>>>;
 };
@@ -116,13 +129,16 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   EmailAddress: ResolverTypeWrapper<Scalars['EmailAddress']>;
+  Grid: ResolverTypeWrapper<Grid>;
   ID: ResolverTypeWrapper<Scalars['ID']>;
+  Int: ResolverTypeWrapper<Scalars['Int']>;
   NonNegativeInt: ResolverTypeWrapper<Scalars['NonNegativeInt']>;
   PositiveFloat: ResolverTypeWrapper<Scalars['PositiveFloat']>;
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>;
   Post: ResolverTypeWrapper<Post>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  UUID: ResolverTypeWrapper<Scalars['UUID']>;
   User: ResolverTypeWrapper<User>;
 };
 
@@ -130,19 +146,33 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
   EmailAddress: Scalars['EmailAddress'];
+  Grid: Grid;
   ID: Scalars['ID'];
+  Int: Scalars['Int'];
   NonNegativeInt: Scalars['NonNegativeInt'];
   PositiveFloat: Scalars['PositiveFloat'];
   PositiveInt: Scalars['PositiveInt'];
   Post: Post;
   Query: {};
   String: Scalars['String'];
+  UUID: Scalars['UUID'];
   User: User;
 };
 
 export interface EmailAddressScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['EmailAddress'], any> {
   name: 'EmailAddress';
 }
+
+export type GridResolvers<ContextType = any, ParentType extends ResolversParentTypes['Grid'] = ResolversParentTypes['Grid']> = {
+  data?: Resolver<Maybe<Array<Maybe<Array<Maybe<ResolversTypes['Int']>>>>>, ParentType, ContextType>;
+  gridId?: Resolver<ResolversTypes['ID'], ParentType, ContextType>;
+  height?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>;
+  interpretAs?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  label?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  problemNumber?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>;
+  width?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
 
 export interface NonNegativeIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['NonNegativeInt'], any> {
   name: 'NonNegativeInt';
@@ -168,9 +198,14 @@ export type PostResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
+  grids?: Resolver<Maybe<Array<Maybe<ResolversTypes['Grid']>>>, ParentType, ContextType>;
   posts?: Resolver<Maybe<Array<Maybe<ResolversTypes['Post']>>>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
 };
+
+export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['UUID'], any> {
+  name: 'UUID';
+}
 
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   age?: Resolver<Maybe<ResolversTypes['PositiveFloat']>, ParentType, ContextType>;
@@ -185,11 +220,13 @@ export type UserResolvers<ContextType = any, ParentType extends ResolversParentT
 
 export type Resolvers<ContextType = any> = {
   EmailAddress?: GraphQLScalarType;
+  Grid?: GridResolvers<ContextType>;
   NonNegativeInt?: GraphQLScalarType;
   PositiveFloat?: GraphQLScalarType;
   PositiveInt?: GraphQLScalarType;
   Post?: PostResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  UUID?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
 };
 

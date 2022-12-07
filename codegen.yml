@@ -12,4 +12,5 @@ generates:
         EmailAddress: string
         PositiveInt: number
         NonNegativeInt: number
+        UUID: string
 

@@ -6,6 +6,8 @@ scalar PositiveInt
 
 scalar NonNegativeInt
 
+scalar UUID
+
 type User {
   id: ID!
   firstName: String!
@@ -26,7 +28,18 @@ type Post {
   author: User
 }
 
+type Grid {
+  gridId: ID!
+  label: String
+  width: PositiveInt!
+  height: PositiveInt!
+  problemNumber: PositiveInt!
+  interpretAs: String!
+  data: [[Int]]
+}
+
 type Query {
   users: [User]
   posts: [Post]
+  grids: [Grid]
 }

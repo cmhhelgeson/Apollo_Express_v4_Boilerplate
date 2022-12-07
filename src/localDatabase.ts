@@ -17,9 +17,9 @@ users.set(1, {id: "1", firstName: 'Alice', lastName: 'Foo', age: 38, email: null
 users.set(2, {id: "2", firstName: 'Bob', lastName: 'Bar', age: 27, email: null} as InitialUser);
 
 // Export the seeded tables
-const database = {
+const localDatabase = {
   posts,
   users,
 };
 
-export default database;
+export default localDatabase;

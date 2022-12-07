@@ -15,8 +15,9 @@ import {
   resolvers as scalarResolvers,
   mocks as scalarMocks,
 } from 'graphql-scalars';
-import users from "./database.js"
-import database from './database.js';
+import { AppDataSource } from "./database/dataSource.js"
+import { Grids } from './database/entities/grids.js'
+import localDatabase from './localDatabase.js';
 
 /* Use imports below to add individual typedefs, resolvers, and mocks for 
 each graphql-scalar custom scalar.
@@ -27,6 +28,10 @@ import {
 } from "graphql-scalars"
 */
 
+interface MyContext {
+  dataSource: typeof AppDataSource
+}
+
 //Create Express app/server
 const app = express();
 const httpServer = http.createServer(app);
@@ -35,11 +40,11 @@ const httpServer = http.createServer(app);
 const typeDefs = readFileSync('./schema.graphql', { encoding: 'utf-8' });
 
 const getUsers = (): Array<User> => {
-  return Array.from(database.users.values())
+  return Array.from(localDatabase.users.values())
 }
 
 const getPosts = (): Array<Post> => {
-  return Array.from(database.posts.values())
+  return Array.from(localDatabase.posts.values())
 }
 
 const computeName = (user: User): string => {
@@ -48,21 +53,26 @@ const computeName = (user: User): string => {
 }
 
 const getPostsByUser = ({id}: User): Array<Post> => {
-  const posts = Array.from(database.posts.values());
+  const posts = Array.from(localDatabase.posts.values());
   const filteredPosts = posts.filter((post) => post.authorID === id);
   console.log(filteredPosts)
   return filteredPosts;
 }
 
 const getAuthorOfPost = ({authorID}: Post): User | undefined => {
-  return database.users.get(parseInt(authorID));
+  return localDatabase.users.get(parseInt(authorID));
 }
+
+
 
 
 const resolvers: Resolvers = {
   Query: {
     users: getUsers,
     posts: getPosts,
+    grids: (parent, args, contextValue: MyContext, info) => {
+      return contextValue.dataSource.manager.find(Grids);
+    }
   },
   User: {
     name: computeName,
@@ -92,11 +102,16 @@ const mockedSchema = addMocksToSchema({
   }
 })
 
+
 //Apply schema and plugins to server
-const server = new ApolloServer({
+const server = new ApolloServer<MyContext>({
   schema: schema,
   plugins: [ApolloServerPluginDrainHttpServer({httpServer})]
 });
+
+await AppDataSource.initialize().then(() => {
+  console.log("Postgres TypeORM Database initialized")
+})
 
 //Start server
 await server.start();
@@ -106,7 +121,9 @@ app.use(
   '/graphql',
   cors<cors.CorsRequest>(),
   json(),
-  expressMiddleware(server)
+  expressMiddleware(server, {
+    context: async () => ({dataSource: AppDataSource})
+  })
 )
 
 await new Promise<void>((resolve) => httpServer.listen({port: 8000}, resolve));
