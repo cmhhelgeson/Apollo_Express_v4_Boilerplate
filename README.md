@@ -7,7 +7,7 @@
 >[GraphQL-Scalars Quickstart], 
 >[GraphQL-Scalars With Apollo Server]
 
-<h1>Boilerplate Tutorial</h1>
+<h1>Basic Boilerplate Tutorial</h1>
 Copy or clone the package.json and tsconfig.json files, and create the codgen.yml file.
 
 <h3>Adding environment files</h3>
@@ -103,6 +103,8 @@ export type User = {
 };
 ```
 
+NOTE: Remember to rerun CodeGen whenever you add new types to your schema.
+
 <h3>Creating HTTP Server</h3>
 
 Start by creating an express application and a httpServer that listens to it
@@ -150,7 +152,6 @@ const resolvers: Resolvers = {
     }
   }
 }
-
 ```
 
 Now that our typeDefs and resolvers are created, we can pass them into the executable schema that will be passed to Apollo Server.
@@ -245,6 +246,12 @@ const mockedSchema = addMocksToSchema({
 
 <h3>Creating and starting Apollo Express Server</h3>
 
+To create our server, pass both your schema or mockedSchema and an array of optional plugins to a new Apollo Server object. 
+
+Since our server will implement our expressMiddleware, it is highly recommended to add ApolloServerPluginDrainHttpServer as a plugin, with our express HTTP server as an argument. By adding this plugin, we ensure that the server closes idle connections if they are not in use. 
+
+Once our server has been created, we can asynchronously await it's initialization.
+
 ```ts
 /* src/index.ts */
 import { ApolloServer } from '@apollo/server';
@@ -258,13 +265,18 @@ const {json} = pkg;
 
 //Apply schema and plugins to server
 const server = new ApolloServer({
-  schema: schema,
+  schema: schema, //or schema: mockedSchema
   plugins: [ApolloServerPluginDrainHttpServer({httpServer})]
 });
 
 //Start server
 await server.start();
+```
 
+Finally, once the server has started, we can pass it as an argument to our express Middleware, along with any other packages (cors, body-parser, etc.) we want our express application to use.
+
+```ts
+/* src/index.ts */
 //Apply express middleware
 app.use(
   '/graphql',
@@ -277,6 +289,47 @@ await new Promise<void>((resolve) => httpServer.listen({port: 8000}, resolve));
 console.log(`🚀 Server listening at: 8000`);
 ```
 
+<h1>Adding TypeORM with PSQL Connection</h1>
+[TypeORM] is an object-relational mapper library that allows us to easily define types for our database that can also be referenced in our Typescript project. While TypeORM can easily be used with multiple relational database models, this project will use a simple PSQL connection.
+
+<h3>Modifying package.json and tsconfig.json</h3>
+
+To access typeorm and PSQL within your project, simply add the latest versions of typeorm and pg (the Node.js Postgres Client) using yarn or npm.
+
+TypeORM depends on decorators to define table classes to the database. However, Typescript does not natively understand these decorators. To allow Typescript to parse and emit data from these decorators, add the emitDecoratorMetadata and experimentalDecorators fields to your tsconfig.json file.
+
+```json
+//tsconfig.json
+{
+  "compilerOptions" {
+    //...
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    //..
+  }
+}
+```
+
+<h3>File Structure</h3>
+
+Within our source 
+
+```
+MyProject
+├── src                   // Source Folder
+│   ├── database          // Location of all database models and connections
+│   │   ├── entities      // Location where database models (entities) are stoerd
+│   │   │   └── Grid.ts   // An entity modeling a grid
+│   │   ├── dataSource.ts // File where we configure our connection to the database
+│   ├── index.ts          // Start point of our Apollo Server v4 application    
+├── .gitignore            // GITIGNORE
+├── package.json          // module dependencies
+├── README.md             // README
+└── tsconfig.json         // Typescript compiler options/directives
+```
+
+
+
 
 [apollo server v4: express middleware api]: <https://www.apollographql.com/docs/apollo-server/api/express-middleware/>
 
@@ -285,4 +338,6 @@ console.log(`🚀 Server listening at: 8000`);
 [graphql-scalars quickstart]: <https://the-guild.dev/graphql/scalars/docs/quick-start>
 
 [graphql-scalars with apollo server]: <https://the-guild.dev/graphql/scalars/docs/usage/apollo-server>
+
+[typeorm]: https://typeorm.io/
 
