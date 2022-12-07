@@ -1,7 +1,7 @@
 {
-  "name": "as4-generating-types-example",
+  "name": "apollo-server-express-v4-boilerplate",
   "version": "1.0.0",
-  "description": "An example of generating types from a schema to use in your resolvers.",
+  "description": "Boilerplate code for creating an Apollo Server Express v4 Application.",
   "main": "index.js",
   "type": "module",
   "scripts": {
