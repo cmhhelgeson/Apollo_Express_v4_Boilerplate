@@ -1,4 +1,4 @@
-TODO: Finish TypeORM explanation in README. Make explanations clearer and more robust.
+TODO: Finish TypeORM explanation in README.
 
 <h1>Disclaimer</h1>
 
