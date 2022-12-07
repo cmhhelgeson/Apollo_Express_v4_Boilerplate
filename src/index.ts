@@ -63,9 +63,6 @@ const getAuthorOfPost = ({authorID}: Post): User | undefined => {
   return localDatabase.users.get(parseInt(authorID));
 }
 
-
-
-
 const resolvers: Resolvers = {
   Query: {
     users: getUsers,
@@ -110,7 +107,7 @@ const server = new ApolloServer<MyContext>({
 });
 
 await AppDataSource.initialize().then(() => {
-  console.log("Postgres TypeORM Database initialized")
+  console.log("Postgres TypeORM Database initialized");
 })
 
 //Start server

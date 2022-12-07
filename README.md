@@ -1,3 +1,5 @@
+TODO: Finish TypeORM explanation
+
 <h1>Disclaimer</h1>
 
 >NOTE: This boilerplate combines and modifies the official documented boilerplate of many of the utilized packages. If you have any issues, consult the boilerplate listed on these websites: 
@@ -312,7 +314,7 @@ TypeORM depends on decorators to define table classes to the database. However, 
 
 <h3>File Structure</h3>
 
-Within our source 
+Within our source folder...
 
 ```
 MyProject
@@ -328,7 +330,150 @@ MyProject
 └── tsconfig.json         // Typescript compiler options/directives
 ```
 
+<h3>Definining TypeORM Entities</h3>
 
+The code below provides an example for how one might define a PSQL table within TypeORM.
+
+```ts
+/* src/database/entities/grid.ts */
+import {Entity, PrimaryGeneratedColumn, Column} from "typeorm"
+
+//The @Entity decorator will create a database table
+@Entity({name: "grid"})
+export class Grid {
+    // Primary Generated Column will automatically generate a primary key column for our table.
+    // By default, @PrimaryGeneratedColumn() will automatically generate an increasing sequence of
+    // numbers. However, we can instead generate a unique uuid for each primary key by passing
+    // "pgcrypto" to the decorator.
+    @PrimaryGeneratedColumn("pgcrypto")
+    gridId: string
+
+    //Here we define a column within our "grid" table, its name ("problemNumber"), and its corresponding
+    //Typescript type
+    @Column()
+    problemNumber: number
+
+    //We can be more granular with our column definition by describing the specific type we want our PSQL
+    //database to use alongside its corresponding Typescript Type.
+    @Column("smallint")
+    width: number
+
+    @Column("smallint")
+    height: number
+
+    //Defining a column with type equivalent to VARCHAR(255)
+    @Column({length: 255})
+    label: string
+
+    //Defining a 2d array of ints
+    @Column("int", {array: true})
+    data: number[][]
+
+    @Column({length: 255})
+    interpretAs: string
+}
+```
+
+Once our database table has been defined, we need to provide an equivalent definition in our GraphQL Schema (NOTE: This can also be expedited with the use of Type-GraphQL, if you want your GraphQL types to be strictly tied to your database types)
+
+```graphql
+"""schema.graphql"""
+scalar PositiveFloat
+scalar PositiveInt
+scalar EmailAddress
+scalar UUID
+
+type User {
+  ...
+}
+
+type Grid {
+  gridId: UUID!
+  label: String
+  width: PositiveInt!
+  height: PositiveInt!
+  problemNumber: PositiveInt!
+  interpretAs: String!
+  data: [[Int]]
+}
+
+type Query {
+  users: [User]
+  grids: [Grid] 
+}
+```
+
+<h3>Creating our Database DataSource</h3>
+
+```ts
+/* src/database/dataSource.ts */
+import { DataSource } from "typeorm"
+import { Grid} from "./entities/grid.js"
+import { psqlPassword, psqlUsername, psqlDatabase} from "./envVars.js"
+
+export const AppDataSource = new DataSource({
+    type: "postgres",
+    host: "localhost",
+    port: 5432,
+    username: `${psqlUsername}`,
+    password: `${psqlPassword}`,
+    database: `${psqlDatabase}`,
+    synchronize: false,
+    logging: true,
+    entities: [Grid],
+    migrations: [],
+    subscribers: [],
+})
+```
+
+<h3>Creating resolvers for database types and applying DataSource to Apollo Server</h3>
+
+NOTE: Run Codegen so your Typescript files will have access to the new Grid Type.
+
+```ts
+/* src/index.ts */
+import {AppDataSource} from "./database/dataSource.js"
+interface MyContext = {
+  dataSource: typeof AppDataSource
+}
+
+//...
+
+const resolvers: Resolvers = {
+  Query: {
+    users: ...,
+    posts: getPosts,
+    grids: (parent, args, contextValue: MyContext, info) => {
+      return contextValue.dataSource.manager.find(Grids);
+    }
+  },
+}
+
+//...
+
+//Apply schema and plugins to server
+const server = new ApolloServer<MyContext>({
+  schema: schema,
+  plugins: [ApolloServerPluginDrainHttpServer({httpServer})]
+});
+
+await AppDataSource.initialize().then(() => {
+  console.log("Postgres TypeORM Database initialized");
+})
+
+//Start server
+await server.start();
+
+//Apply express middleware
+app.use(
+  '/graphql',
+  cors<cors.CorsRequest>(),
+  json(),
+  expressMiddleware(server, {
+    context: async () => ({dataSource: AppDataSource})
+  })
+)
+```
 
 
 [apollo server v4: express middleware api]: <https://www.apollographql.com/docs/apollo-server/api/express-middleware/>
