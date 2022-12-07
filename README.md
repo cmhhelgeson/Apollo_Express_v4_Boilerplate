@@ -8,6 +8,7 @@ TODO: Finish TypeORM explanation in README. Make explanations clearer and more r
 >[Apollo Server v4: Type Generation],
 >[GraphQL-Scalars Quickstart], 
 >[GraphQL-Scalars With Apollo Server]
+>[TypeORM]
 
 <h1>Basic Boilerplate Tutorial</h1>
 Copy or clone the package.json and tsconfig.json files, and create the codgen.yml file.
