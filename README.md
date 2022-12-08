@@ -292,6 +292,8 @@ await new Promise<void>((resolve) => httpServer.listen({port: 8000}, resolve));
 console.log(`🚀 Server listening at: 8000`);
 ```
 
+Now that our Apollo Server has been set up, we can call the server with our package's "start" script and listen to the server at localhost:8000/graphql.
+
 <h1>Adding TypeORM with PSQL Connection</h1>
 [TypeORM] is an object-relational mapper library that allows us to easily define types for our database that can also be referenced in our Typescript project. While TypeORM can easily be used with multiple relational database models, this project will use a simple PSQL connection.
 
