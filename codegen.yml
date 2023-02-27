@@ -2,15 +2,13 @@
 schema: './schema.graphql'
 generates:
   # Specify where our generated types should live.
-  ./src/__generated__/resolvers-types.ts:
+  ./src/__generated__/schema-types.ts:
     plugins:
       - 'typescript'
       - 'typescript-resolvers'
     config:
       scalars:
-        PositiveFloat: number
-        EmailAddress: string
         PositiveInt: number
-        NonNegativeInt: number
         UUID: string
-
+      namingConvention:
+        enumValues: change-case-all#upperCase

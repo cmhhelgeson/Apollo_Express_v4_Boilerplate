@@ -1,7 +1,7 @@
 type Movie {
   title: String!,
-  id: Int!,
-  year: Int!
+  id: UUID!,
+  year: PositiveInt!
   studio: String!,
   director: String!
 }

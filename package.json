@@ -1,41 +1,47 @@
 {
   "name": "apollo-server-express-v4-boilerplate",
   "version": "1.0.0",
-  "description": "Boilerplate code for creating an Apollo Server Express v4 Application.",
+  "description": "TODO: Finish TypeORM explanation in README.",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "generate": "graphql-codegen --config codegen.yml",
-    "compile": "npm run generate && tsc",
-    "postinstall": "npm run compile",
-    "start": "npm run compile && node ./dist/index.js",
-    "watch": "concurrently  --names \"CodeGen,TS,Nodemon\" -c \"bgYellow,bgBlue,bgMagenta\" \"graphql-codegen --watch 'src/**/*.ts'\"  \"tsc -w \" \"nodemon ./dist/index.js \""
+    "generateFromSchema": "graphql-codegen --config codegen.yml",
+    "compile": "rimraf dist && graphql-codegen --config codegen.yml && tsc",
+    "startAfterBuild": "npm run compile && node ./dist/index.js",
+    "start": "node ./dist/index.js"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cmhhelgeson/Apollo-Server-Express-v4-Boilerplate.git"
+  },
   "author": "",
   "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cmhhelgeson/Apollo-Server-Express-v4-Boilerplate/issues"
+  },
+  "homepage": "https://github.com/cmhhelgeson/Apollo-Server-Express-v4-Boilerplate#readme",
   "dependencies": {
-    "@apollo/server": "^4.0.0",
-    "@graphql-tools/mock": "^8.7.12",
-    "@graphql-tools/schema": "^9.0.10",
-    "body-parser": "^1.20.1",
+    "@apollo/server": "^4.4.0",
+    "@graphql-tools/mock": "^8.7.18",
+    "@graphql-tools/schema": "^9.0.16",
+    "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.18.2",
     "graphql": "^16.6.0",
     "graphql-scalars": "^1.20.1",
     "graphql-tag": "^2.12.6",
-    "pg": "^8.8.0",
+    "pg": "^8.9.0",
     "reflect-metadata": "^0.1.13",
-    "typeorm": "^0.3.11",
-    "typescript": "^4.8.3"
+    "typeorm": "^0.3.12",
+    "typescript": "^4.9.5"
   },
   "devDependencies": {
-    "@graphql-codegen/cli": "2.12.0",
-    "@graphql-codegen/typescript": "2.7.3",
-    "@graphql-codegen/typescript-resolvers": "2.7.3",
+    "@graphql-codegen/cli": "^3.2.1",
+    "@graphql-codegen/typescript": "^3.0.1",
+    "@graphql-codegen/typescript-resolvers": "^3.1.0",
     "@types/cors": "^2.8.13",
-    "@types/node": "^18.7.18",
-    "concurrently": "7.4.0",
-    "nodemon": "2.0.19"
+    "@types/node": "^18.14.1",
+    "concurrently": "^7.6.0",
+    "nodemon": "^2.0.20"
   }
 }
