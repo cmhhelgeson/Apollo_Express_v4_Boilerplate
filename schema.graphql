@@ -1,3 +1,7 @@
+scalar PositiveInt
+
+scalar UUID
+
 type Movie {
   title: String!,
   id: UUID!,
