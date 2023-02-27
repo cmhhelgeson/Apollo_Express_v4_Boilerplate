@@ -4,6 +4,7 @@ export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]?: Maybe<T[SubKey]> };
 export type MakeMaybe<T, K extends keyof T> = Omit<T, K> & { [SubKey in K]: Maybe<T[SubKey]> };
+export type RequireFields<T, K extends keyof T> = Omit<T, K> & { [P in K]-?: NonNullable<T[P]> };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: string;
@@ -15,6 +16,14 @@ export type Scalars = {
   UUID: string;
 };
 
+export type AddMovieInput = {
+  __typename?: 'AddMovieInput';
+  director: Scalars['String'];
+  studio: Scalars['String'];
+  title: Scalars['String'];
+  year: Scalars['PositiveInt'];
+};
+
 export type Movie = {
   __typename?: 'Movie';
   director: Scalars['String'];
@@ -23,6 +32,16 @@ export type Movie = {
   studio: Scalars['String'];
   title: Scalars['String'];
   year: Scalars['PositiveInt'];
+};
+
+export type Mutation = {
+  __typename?: 'Mutation';
+  addMovie?: Maybe<Movie>;
+};
+
+
+export type MutationAddMovieArgs = {
+  input: AddMovieInput;
 };
 
 export type Query = {
@@ -99,8 +118,10 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
+  AddMovieInput: ResolverTypeWrapper<AddMovieInput>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
   Movie: ResolverTypeWrapper<Movie>;
+  Mutation: ResolverTypeWrapper<{}>;
   PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
@@ -109,12 +130,22 @@ export type ResolversTypes = {
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
+  AddMovieInput: AddMovieInput;
   Boolean: Scalars['Boolean'];
   Movie: Movie;
+  Mutation: {};
   PositiveInt: Scalars['PositiveInt'];
   Query: {};
   String: Scalars['String'];
   UUID: Scalars['UUID'];
+};
+
+export type AddMovieInputResolvers<ContextType = any, ParentType extends ResolversParentTypes['AddMovieInput'] = ResolversParentTypes['AddMovieInput']> = {
+  director?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  studio?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  year?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export type MovieResolvers<ContextType = any, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
@@ -125,6 +156,10 @@ export type MovieResolvers<ContextType = any, ParentType extends ResolversParent
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   year?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  addMovie?: Resolver<Maybe<ResolversTypes['Movie']>, ParentType, ContextType, RequireFields<MutationAddMovieArgs, 'input'>>;
 };
 
 export interface PositiveIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PositiveInt'], any> {
@@ -140,7 +175,9 @@ export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type Resolvers<ContextType = any> = {
+  AddMovieInput?: AddMovieInputResolvers<ContextType>;
   Movie?: MovieResolvers<ContextType>;
+  Mutation?: MutationResolvers<ContextType>;
   PositiveInt?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
   UUID?: GraphQLScalarType;

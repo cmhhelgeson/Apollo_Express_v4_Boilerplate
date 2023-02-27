@@ -1,5 +1,3 @@
-TODO: Finish TypeORM explanation in README.
-
 <h1>Disclaimer</h1>
 
 >NOTE: This boilerplate combines and modifies the official documented boilerplate of many of the utilized packages. If you have any issues, consult the boilerplate listed on these websites: 

@@ -14,3 +14,14 @@ type Movie {
 type Query {
   movies: [Movie]
 }
+
+type AddMovieInput {
+  title: String!,
+  year: PositiveInt!,
+  studio: String!,
+  director: String!
+}
+
+type Mutation {
+  addMovie(input: AddMovieInput!): Movie
+}
