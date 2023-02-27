@@ -31,13 +31,14 @@ const resolvers: Resolvers = {
     openingPhrase: getOpeningPhrase,
   },
   Mutation: {
-    addMovie: (parent, args, contextValue: MyContext, info) => {
+    addMovie: async (parent, args, contextValue: MyContext, info) => {
       const {title, director, studio, year} = args.input;
       const movie = new MovieORM();
       movie.director = director;
       movie.title = title;
       movie.year = year;
       movie.studio = studio;
+      await contextValue.dataSource.manager.save(movie);
       return movie;
     }
   }

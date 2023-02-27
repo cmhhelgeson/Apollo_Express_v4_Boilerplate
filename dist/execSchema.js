@@ -17,13 +17,14 @@ const resolvers = {
         openingPhrase: getOpeningPhrase,
     },
     Mutation: {
-        addMovie: (parent, args, contextValue, info) => {
+        addMovie: async (parent, args, contextValue, info) => {
             const { title, director, studio, year } = args.input;
             const movie = new MovieORM();
             movie.director = director;
             movie.title = title;
             movie.year = year;
             movie.studio = studio;
+            await contextValue.dataSource.manager.save(movie);
             return movie;
         }
     }
