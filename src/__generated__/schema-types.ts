@@ -1,4 +1,4 @@
-import { GraphQLResolveInfo } from 'graphql';
+import { GraphQLResolveInfo, GraphQLScalarType, GraphQLScalarTypeConfig } from 'graphql';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -11,15 +11,18 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
+  PositiveInt: number;
+  UUID: string;
 };
 
 export type Movie = {
   __typename?: 'Movie';
   director: Scalars['String'];
-  id: Scalars['Int'];
+  id: Scalars['UUID'];
+  openingPhrase: Scalars['String'];
   studio: Scalars['String'];
   title: Scalars['String'];
-  year: Scalars['Int'];
+  year: Scalars['PositiveInt'];
 };
 
 export type Query = {
@@ -97,36 +100,49 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']>;
-  Int: ResolverTypeWrapper<Scalars['Int']>;
   Movie: ResolverTypeWrapper<Movie>;
+  PositiveInt: ResolverTypeWrapper<Scalars['PositiveInt']>;
   Query: ResolverTypeWrapper<{}>;
   String: ResolverTypeWrapper<Scalars['String']>;
+  UUID: ResolverTypeWrapper<Scalars['UUID']>;
 };
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean'];
-  Int: Scalars['Int'];
   Movie: Movie;
+  PositiveInt: Scalars['PositiveInt'];
   Query: {};
   String: Scalars['String'];
+  UUID: Scalars['UUID'];
 };
 
 export type MovieResolvers<ContextType = any, ParentType extends ResolversParentTypes['Movie'] = ResolversParentTypes['Movie']> = {
   director?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  id?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  openingPhrase?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   studio?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  year?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  year?: Resolver<ResolversTypes['PositiveInt'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
+
+export interface PositiveIntScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['PositiveInt'], any> {
+  name: 'PositiveInt';
+}
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   movies?: Resolver<Maybe<Array<Maybe<ResolversTypes['Movie']>>>, ParentType, ContextType>;
 };
 
+export interface UuidScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['UUID'], any> {
+  name: 'UUID';
+}
+
 export type Resolvers<ContextType = any> = {
   Movie?: MovieResolvers<ContextType>;
+  PositiveInt?: GraphQLScalarType;
   Query?: QueryResolvers<ContextType>;
+  UUID?: GraphQLScalarType;
 };
 

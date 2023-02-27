@@ -8,6 +8,7 @@ type Movie {
   year: PositiveInt!
   studio: String!,
   director: String!
+  openingPhrase: String!
 }
 
 type Query {
