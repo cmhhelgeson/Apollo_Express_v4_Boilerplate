@@ -19,15 +19,6 @@ import { AppDataSource } from "./database/dataSource.js"
 import { Grids } from './database/entities/grids.js'
 import localDatabase from './localDatabase.js';
 
-/* Use imports below to add individual typedefs, resolvers, and mocks for 
-each graphql-scalar custom scalar.
-import {
-  PositiveIntMock,
-  PositiveIntResolver,
-  PositiveIntTypeDefinition
-} from "graphql-scalars"
-*/
-
 interface MyContext {
   dataSource: typeof AppDataSource
 }
