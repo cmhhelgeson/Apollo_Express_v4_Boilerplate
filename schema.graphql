@@ -15,7 +15,7 @@ type Query {
   movies: [Movie]
 }
 
-type AddMovieInput {
+input AddMovieInput {
   title: String!,
   year: PositiveInt!,
   studio: String!,
