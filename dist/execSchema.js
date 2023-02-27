@@ -16,6 +16,17 @@ const resolvers = {
     Movie: {
         openingPhrase: getOpeningPhrase,
     },
+    Mutation: {
+        addMovie: (parent, args, contextValue, info) => {
+            const { title, director, studio, year } = args.input;
+            const movie = new MovieORM();
+            movie.director = director;
+            movie.title = title;
+            movie.year = year;
+            movie.studio = studio;
+            return movie;
+        }
+    }
 };
 const schema = makeExecutableSchema({
     typeDefs: [
