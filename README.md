@@ -11,3 +11,13 @@
 <h1>Tutorial Link</h1>
 https://medium.com/p/4226277c7a53
 
+[apollo server v4: express middleware api]: <https://www.apollographql.com/docs/apollo-server/api/express-middleware/>
+
+[apollo server v4: type generation]: <https://www.apollographql.com/docs/apollo-server/workflow/generate-types>
+
+[graphql-scalars quickstart]: <https://the-guild.dev/graphql/scalars/docs/quick-start>
+
+[graphql-scalars with apollo server]: <https://the-guild.dev/graphql/scalars/docs/usage/apollo-server>
+
+[typeorm]: https://typeorm.io/
+
