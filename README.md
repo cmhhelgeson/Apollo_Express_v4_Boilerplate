@@ -9,4 +9,5 @@
 >[TypeORM]
 
 <h1>Tutorial Link</h1>
+https://medium.com/p/4226277c7a53
 
